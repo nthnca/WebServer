@@ -147,7 +147,7 @@ void HttpResponse::SendPartialResponse(const std::string type, int fd,
     available = (size_t)read(fd, buffer, BUF_SIZE);
     size_t sending = (available > to_send) ? to_send : available;
     ssize_t sent = send_(fd_, buffer, sending, 0);
-    if (sent != sending) {
+    if ((size_t)sent != sending) {
       break;
     }
     to_send -= (size_t)sent;
