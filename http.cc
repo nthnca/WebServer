@@ -108,6 +108,7 @@ void HttpResponse::SendResponse(const std::string type, int fd, size_t length) {
   ss << "\r\n";
   send_(fd_, ss.str().c_str(), ss.str().size(), 0);
 
+  size_t to_send = length;
   ssize_t available = 1;
   char buffer[BUF_SIZE];
   while (available > 0) {
@@ -116,6 +117,10 @@ void HttpResponse::SendResponse(const std::string type, int fd, size_t length) {
     if (sent != available) {
       break;
     }
+    to_send -= (size_t)sent;
+  }
+  if (to_send != 0) {
+    LOG_WARNING("Finished sending, remaining: %lu, fd: %d", to_send, fd);
   }
 }
 
@@ -146,6 +151,10 @@ void HttpResponse::SendPartialResponse(const std::string type, int fd,
       break;
     }
     to_send -= (size_t)sent;
+  }
+
+  if (to_send != 0) {
+    LOG_WARNING("Finished sending, remaining: %lu, fd: %d", to_send, fd);
   }
 }
 
