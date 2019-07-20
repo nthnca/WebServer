@@ -265,22 +265,23 @@ void serveFile(const HttpRequest *req, HttpResponse *resp, const string &type) {
     return;
   }
 
-  ssize_t file_size = lseek(fd, 0, SEEK_END);
-  ssize_t err = lseek(fd, 0, SEEK_SET);
+  ssize_t file_size = lseek64(fd, 0, SEEK_END);
+  ssize_t err = lseek64(fd, 0, SEEK_SET);
 
   // EX debug for lseek
   cout << file_size << ": " << err << ": " << endl;
   // TODO finish the stuff below
-  /*size_t start, end;
+  size_t start, end;
   if (byteRange(req->Headers(), &start, &end)) {
     if (end == 0) {
-      end = (size_t)file_size;
+      end = (size_t)file_size - 1;
     }
     LOG_INFO("Send partial response: %ld %ld", start, end);
-    // resp->SendPartialResponse(type, fd, (size_t)file_size, start, end);
+    resp->SendPartialResponse(type, fd, (size_t)file_size, start, end);
+    // resp->SendResponse(type, fd, (size_t)file_size);
+  } else {
     resp->SendResponse(type, fd, (size_t)file_size);
-  } else {*/
-  resp->SendResponse(type, fd, (size_t)file_size);
+  }
   close(fd);
 }
 
