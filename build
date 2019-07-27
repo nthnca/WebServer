@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -xe
+
+BINARY=$1
+COMPILER=g++
+
+build_and_run_test() {
+  $COMPILER $1 \
+      -L$HOME/lib/ -lgtest -lgtest_main -lpthread -I$HOME/include/ \
+      -o "tests/$2" && \
+  ./tests/"$2"
+}
+
+build_server() {
+  $COMPILER -std=c++14 -Wall -Werror -Wshadow -Wconversion \
+      -g -pthread http.cc server.cc main.cc -lstdc++fs -o $BINARY
+}
+
+# Build the main binary
+build_server
+
+# Build and run each test
+# Add more tests invocations below here.
+build_and_run_test "http.cc http_test.cc" http_test

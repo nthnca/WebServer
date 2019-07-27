@@ -3,7 +3,7 @@
 set -x
 
 while true; do
-./build_server && ./build_and_run_tests
+./build testServer
 
 sleep 5
 inotifywait -r -e modify,create,delete .
